@@ -22,7 +22,7 @@ Next.js (App Router) + TypeScript, Tailwind, Supabase (Postgres + Auth), Stripe 
 ## Cómo trabajar en este repo
 
 1. Trabaja **un paso del plan a la vez**. Antes de escribir código, resume qué vas a hacer y qué archivos tocarás.
-2. Al terminar un paso: ejecuta `npm run typecheck` y `npm run lint`; si fallan, arréglalo antes de seguir.
+2. Al terminar un paso: ejecuta `pnpm run typecheck` y `pnpm run lint`; si fallan, arréglalo antes de seguir.
 3. Haz **un commit por paso** con el mensaje exacto que indica `docs/plan-desarrollo.md`, y marca su casilla `[x]` en ese archivo en el mismo commit.
 4. No empieces el siguiente paso ni la siguiente fase sin que te lo pida.
 5. Al cerrar una fase, comprueba su criterio "Hecho cuando" y dime qué debo probar a mano. La etiqueta de versión (`v0.x.0`) la creo yo.

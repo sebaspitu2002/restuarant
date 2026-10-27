@@ -27,7 +27,7 @@ Una rama por paso, commits pequeños con Conventional Commits y una etiqueta al 
 Pasos y commits:
 
 - [x] Crear el proyecto con `**create-next-app**` (TypeScript, Tailwind, App Router, ESLint) → `chore: init next.js app with typescript and tailwind`
-- [ ] Añadir Prettier, scripts `typecheck` y `lint`, y un workflow de GitHub Actions que los ejecute → `chore: add prettier, typecheck and ci workflow`
+- [x] Añadir Prettier, scripts `typecheck` y `lint`, y un workflow de GitHub Actions que los ejecute → `chore: add prettier, typecheck and ci workflow`
 - [ ] Crear el proyecto de Supabase, instalar la CLI y enlazarlo; carpeta `supabase/` versionada → `chore(db): link supabase project and add migrations folder`
 - [ ] Crear `.env.example` con todas las variables (Supabase, Stripe, Resend, `CLIENT_SLUG`, `HMAC_SECRET`) → `chore: add env example`
 - [ ] Conectar el repo a Vercel y comprobar el despliegue de `main` y de una rama → `docs: add readme with setup and deploy steps`
@@ -111,14 +111,14 @@ Pasos y commits:
 
 **Objetivo:** solo lo que un cliente haya comprado o pedido; cada extra es una versión menor independiente y se activa con un flag en su config.
 
-| Extra | Commits | Hecho cuando |
-| --- | --- | --- |
-| Señal de reservas para grupos | `feat(reservations): hold slot pending deposit checkout` · `feat(reservations): confirm on deposit webhook` · `feat(reservations): expire unpaid holds via cron` | Una reserva sin pagar libera su plaza a los 15 minutos |
-| Recordatorio 24 h | `feat(reservations): send reminder with attendance confirmation` | El email llega la víspera y el botón marca la asistencia |
-| Envío programado de tarjetas | `feat(giftcards): schedule delivery date via cron` | Una tarjeta para el 24 de diciembre sale ese día a las 9:00 |
-| Resumen diario al dueño | `feat(panel): send daily sales and redemptions summary` | El email cuadra con el libro de movimientos del día |
-| Anular y reemitir tarjeta | `feat(giftcards): void and reissue card` | La tarjeta anulada da error y la nueva conserva el saldo |
-| Aviso de entrega tardía | `feat(countdown): warn when gift card arrives after christmas` | Pasado el corte, la compra muestra el aviso antes de pagar |
+| Extra                         | Commits                                                                                                                                                          | Hecho cuando                                                |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Señal de reservas para grupos | `feat(reservations): hold slot pending deposit checkout` · `feat(reservations): confirm on deposit webhook` · `feat(reservations): expire unpaid holds via cron` | Una reserva sin pagar libera su plaza a los 15 minutos      |
+| Recordatorio 24 h             | `feat(reservations): send reminder with attendance confirmation`                                                                                                 | El email llega la víspera y el botón marca la asistencia    |
+| Envío programado de tarjetas  | `feat(giftcards): schedule delivery date via cron`                                                                                                               | Una tarjeta para el 24 de diciembre sale ese día a las 9:00 |
+| Resumen diario al dueño       | `feat(panel): send daily sales and redemptions summary`                                                                                                          | El email cuadra con el libro de movimientos del día         |
+| Anular y reemitir tarjeta     | `feat(giftcards): void and reissue card`                                                                                                                         | La tarjeta anulada da error y la nueva conserva el saldo    |
+| Aviso de entrega tardía       | `feat(countdown): warn when gift card arrives after christmas`                                                                                                   | Pasado el corte, la compra muestra el aviso antes de pagar  |
 
 ## Alta de un cliente nuevo
 

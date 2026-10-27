@@ -18,20 +18,20 @@ Principios para no sobreingeniar:
 
 Next.js con TypeScript sobre Vercel, Postgres en Supabase y Stripe Checkout: todo un mismo lenguaje, sin servidores que mantener y con planes gratuitos suficientes para empezar.
 
-| Pieza | Elección | Para qué |
-| --- | --- | --- |
-| Framework | Next.js (App Router) + TypeScript | Landing, páginas públicas, panel y API en un solo proyecto |
-| Estilos | Tailwind CSS | Tematizar por cliente con unas pocas variables de color y fuente |
-| Base de datos | Supabase (Postgres) | Reservas, tarjetas, movimientos; transacciones atómicas |
-| Autenticación | Supabase Auth (email con enlace mágico) | Acceso al panel del dueño y los empleados |
-| Pagos | Stripe Checkout + webhooks, cuenta del cliente | Venta de tarjetas y señales de reserva |
-| Email | Resend + React Email | Entrega de tarjetas, confirmaciones y recordatorios |
-| PDF y QR | pdf-lib + qrcode | Tarjeta regalo descargable con QR |
-| Lector QR | API BarcodeDetector con html5-qrcode como respaldo | Canje desde el móvil del comercio |
-| Tareas programadas | Vercel Cron | Recordatorios de reserva, envíos programados, resumen diario |
-| Límite de peticiones | Tabla en Postgres o Upstash Ratelimit | Frenar fuerza bruta en la consulta de saldo |
-| Validación | Zod | Validar la config de cada cliente y los formularios |
-| Analítica | Vercel Analytics o Plausible | Sin cookies, así no hace falta banner de consentimiento para medir |
+| Pieza                | Elección                                           | Para qué                                                           |
+| -------------------- | -------------------------------------------------- | ------------------------------------------------------------------ |
+| Framework            | Next.js (App Router) + TypeScript                  | Landing, páginas públicas, panel y API en un solo proyecto         |
+| Estilos              | Tailwind CSS                                       | Tematizar por cliente con unas pocas variables de color y fuente   |
+| Base de datos        | Supabase (Postgres)                                | Reservas, tarjetas, movimientos; transacciones atómicas            |
+| Autenticación        | Supabase Auth (email con enlace mágico)            | Acceso al panel del dueño y los empleados                          |
+| Pagos                | Stripe Checkout + webhooks, cuenta del cliente     | Venta de tarjetas y señales de reserva                             |
+| Email                | Resend + React Email                               | Entrega de tarjetas, confirmaciones y recordatorios                |
+| PDF y QR             | pdf-lib + qrcode                                   | Tarjeta regalo descargable con QR                                  |
+| Lector QR            | API BarcodeDetector con html5-qrcode como respaldo | Canje desde el móvil del comercio                                  |
+| Tareas programadas   | Vercel Cron                                        | Recordatorios de reserva, envíos programados, resumen diario       |
+| Límite de peticiones | Tabla en Postgres o Upstash Ratelimit              | Frenar fuerza bruta en la consulta de saldo                        |
+| Validación           | Zod                                                | Validar la config de cada cliente y los formularios                |
+| Analítica            | Vercel Analytics o Plausible                       | Sin cookies, así no hace falta banner de consentimiento para medir |
 
 Una base de datos de Supabase compartida por todos los clientes, con columna `business_id` y RLS, basta al principio. Si un cliente crece o lo exige, se le da su propio proyecto cambiando solo variables de entorno.
 
@@ -78,8 +78,12 @@ export default defineClient({
     landing: { sections: ["hero", "menu", "gallery", "reviews", "location", "faq"] },
     reservations: { enabled: true, deposit: { perPerson: 10, minGuests: 8 } },
     giftcards: { enabled: true, amounts: [25, 50, 100], custom: { min: 20, max: 300 } },
-    countdown: { enabled: true, target: { type: "date", at: "2026-12-05T23:59" },
-                 label: "Reservas de cenas de empresa hasta", onEnd: "closeReservations" },
+    countdown: {
+      enabled: true,
+      target: { type: "date", at: "2026-12-05T23:59" },
+      label: "Reservas de cenas de empresa hasta",
+      onEnd: "closeReservations",
+    },
   },
 });
 ```
@@ -99,15 +103,15 @@ Las rutas de un módulo empiezan con `if (!isEnabled("giftcards")) notFound()`. 
 
 La landing es una lista de secciones ordenadas en la config; cada cliente elige cuáles y en qué orden, y los demás módulos añaden sus llamadas a la acción.
 
-| Sección | Contenido | Siempre / opcional |
-| --- | --- | --- |
-| Hero | Titular de campaña, imagen o vídeo corto, CTA principal | Siempre |
-| Oferta | Menú navideño, packs o servicios con precio | Siempre |
-| Galería / vídeo | Fotos y los Reels editados del pack | Opcional |
-| Reseñas | 3 a 5 opiniones reales de Google, con enlace | Opcional |
-| Ubicación y horario | Mapa, dirección, horarios especiales de diciembre | Siempre |
-| FAQ | Alergias, grupos, pagos, cancelaciones | Opcional |
-| Pie legal | Aviso legal, privacidad, cookies (LSSI y RGPD) | Siempre |
+| Sección             | Contenido                                               | Siempre / opcional |
+| ------------------- | ------------------------------------------------------- | ------------------ |
+| Hero                | Titular de campaña, imagen o vídeo corto, CTA principal | Siempre            |
+| Oferta              | Menú navideño, packs o servicios con precio             | Siempre            |
+| Galería / vídeo     | Fotos y los Reels editados del pack                     | Opcional           |
+| Reseñas             | 3 a 5 opiniones reales de Google, con enlace            | Opcional           |
+| Ubicación y horario | Mapa, dirección, horarios especiales de diciembre       | Siempre            |
+| FAQ                 | Alergias, grupos, pagos, cancelaciones                  | Opcional           |
+| Pie legal           | Aviso legal, privacidad, cookies (LSSI y RGPD)          | Siempre            |
 
 Transversal a todas las landings:
 
@@ -120,18 +124,18 @@ Transversal a todas las landings:
 
 El núcleo del módulo es el control de aforo por franja con descuento atómico; la señal con Stripe y los recordatorios son extras que se activan por config.
 
-| Funcionalidad | Detalle | Nivel |
-| --- | --- | --- |
-| Reglas de disponibilidad | Días, franjas (por ejemplo 13:30 y 21:00) y aforo por franja, en tabla editable desde el panel | Base |
-| Fechas bloqueadas | Cerrar un día o una franja concreta | Base |
-| Formulario | Fecha, franja, personas, nombre, email, teléfono, notas (alergias) | Base |
-| Reserva atómica | Inserción y comprobación de aforo en una transacción con bloqueo de la franja | Base |
-| Confirmación | Email con enlace firmado para cancelar | Base |
-| Panel | Lista por día, alta manual (reservas por teléfono), cancelar, marcar no-show | Base |
-| Señal para grupos | Desde N personas, pago con Stripe Checkout; la plaza queda retenida 15 minutos hasta el webhook | Extra |
-| Recordatorio 24 h | Email con botón de confirmar asistencia (Vercel Cron) | Extra |
-| Eventos especiales | Nochevieja o menú de empresa: fecha única, precio fijo, aforo propio | Extra |
-| Lista de espera | Si una franja está llena; aviso al liberarse una plaza | Extra |
+| Funcionalidad            | Detalle                                                                                         | Nivel |
+| ------------------------ | ----------------------------------------------------------------------------------------------- | ----- |
+| Reglas de disponibilidad | Días, franjas (por ejemplo 13:30 y 21:00) y aforo por franja, en tabla editable desde el panel  | Base  |
+| Fechas bloqueadas        | Cerrar un día o una franja concreta                                                             | Base  |
+| Formulario               | Fecha, franja, personas, nombre, email, teléfono, notas (alergias)                              | Base  |
+| Reserva atómica          | Inserción y comprobación de aforo en una transacción con bloqueo de la franja                   | Base  |
+| Confirmación             | Email con enlace firmado para cancelar                                                          | Base  |
+| Panel                    | Lista por día, alta manual (reservas por teléfono), cancelar, marcar no-show                    | Base  |
+| Señal para grupos        | Desde N personas, pago con Stripe Checkout; la plaza queda retenida 15 minutos hasta el webhook | Extra |
+| Recordatorio 24 h        | Email con botón de confirmar asistencia (Vercel Cron)                                           | Extra |
+| Eventos especiales       | Nochevieja o menú de empresa: fecha única, precio fijo, aforo propio                            | Extra |
+| Lista de espera          | Si una franja está llena; aviso al liberarse una plaza                                          | Extra |
 
 Reglas de seguridad:
 
@@ -144,20 +148,20 @@ Reglas de seguridad:
 
 Una tarjeta solo existe si su código está activo en la base de datos con saldo; el PDF y el QR son punteros, y el canje se decide siempre en el servidor con una actualización atómica.
 
-| Funcionalidad | Detalle | Nivel |
-| --- | --- | --- |
-| Página de compra | Importes fijos + importe libre con mínimo y máximo, destinatario, mensaje, fecha de envío | Base |
-| Pago | Stripe Checkout con `metadata.module = giftcards`; 3D Secure por defecto | Base |
-| Activación | Solo en el webhook verificado; idempotente por id de evento | Base |
-| Código | 16 caracteres base32 de `crypto.randomBytes`; se guarda el HMAC, no el código | Base |
-| Entrega | PDF con marca y QR + email; envío programado para el día elegido | Base |
-| Consulta de saldo | `/g/[code]` muestra saldo y caducidad; límite de peticiones por IP | Base |
-| Canje en el panel | Escanear QR o teclear código, ver saldo, descontar un importe parcial | Base |
-| Libro de movimientos | Emisión, canje, anulación; el saldo se deriva, no se edita | Base |
-| Empleados | Cuenta por persona; cada canje guarda quién lo hizo | Base |
-| Resumen diario | Email al dueño con ventas y canjes del día | Extra |
-| Anular y reemitir | Por pérdida o email equivocado; reenvío solo al email del comprador | Extra |
-| Tarjetas físicas | Códigos pregenerados inactivos que se activan al venderse en el local | Extra |
+| Funcionalidad        | Detalle                                                                                   | Nivel |
+| -------------------- | ----------------------------------------------------------------------------------------- | ----- |
+| Página de compra     | Importes fijos + importe libre con mínimo y máximo, destinatario, mensaje, fecha de envío | Base  |
+| Pago                 | Stripe Checkout con `metadata.module = giftcards`; 3D Secure por defecto                  | Base  |
+| Activación           | Solo en el webhook verificado; idempotente por id de evento                               | Base  |
+| Código               | 16 caracteres base32 de `crypto.randomBytes`; se guarda el HMAC, no el código             | Base  |
+| Entrega              | PDF con marca y QR + email; envío programado para el día elegido                          | Base  |
+| Consulta de saldo    | `/g/[code]` muestra saldo y caducidad; límite de peticiones por IP                        | Base  |
+| Canje en el panel    | Escanear QR o teclear código, ver saldo, descontar un importe parcial                     | Base  |
+| Libro de movimientos | Emisión, canje, anulación; el saldo se deriva, no se edita                                | Base  |
+| Empleados            | Cuenta por persona; cada canje guarda quién lo hizo                                       | Base  |
+| Resumen diario       | Email al dueño con ventas y canjes del día                                                | Extra |
+| Anular y reemitir    | Por pérdida o email equivocado; reenvío solo al email del comprador                       | Extra |
+| Tarjetas físicas     | Códigos pregenerados inactivos que se activan al venderse en el local                     | Extra |
 
 Ciclo de vida: `pendiente_pago → activa → parcialmente_usada → agotada`, con salidas a `caducada` o `anulada`.
 
@@ -172,13 +176,13 @@ Antisfraude, resumido:
 
 El countdown solo cuenta hacia fechas o plazas reales, y al llegar a cero cambia de verdad lo que se puede hacer en la página; es el módulo más pequeño y el más vistoso en la demo.
 
-| Opción de config | Valores | Ejemplo |
-| --- | --- | --- |
-| `target.type` | `date` fija, `reservationsEvent` (cierre de un evento), `giftcardCutoff` (último día de entrega antes de Navidad) | Cenas de empresa hasta el 5 de diciembre |
-| `label` | Texto junto al contador | "Recibe tu tarjeta antes de Nochebuena" |
-| `seats` | Mostrar plazas libres leídas de reservas | "Quedan 8 plazas para Nochevieja" |
-| `onEnd` | `hide`, `changeCta`, `closeReservations`, `warnGiftcardDelivery` | El botón pasa a "Lista de espera" |
-| `placement` | Junto al CTA del hero o barra superior discreta | Junto al CTA |
+| Opción de config | Valores                                                                                                           | Ejemplo                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `target.type`    | `date` fija, `reservationsEvent` (cierre de un evento), `giftcardCutoff` (último día de entrega antes de Navidad) | Cenas de empresa hasta el 5 de diciembre |
+| `label`          | Texto junto al contador                                                                                           | "Recibe tu tarjeta antes de Nochebuena"  |
+| `seats`          | Mostrar plazas libres leídas de reservas                                                                          | "Quedan 8 plazas para Nochevieja"        |
+| `onEnd`          | `hide`, `changeCta`, `closeReservations`, `warnGiftcardDelivery`                                                  | El botón pasa a "Lista de espera"        |
+| `placement`      | Junto al CTA del hero o barra superior discreta                                                                   | Junto al CTA                             |
 
 Implementación:
 
@@ -190,16 +194,16 @@ Implementación:
 
 Ocho tablas cubren los cuatro módulos; todas llevan `business_id` y políticas RLS para que un comercio nunca vea datos de otro.
 
-| Tabla | Campos clave | Módulo |
-| --- | --- | --- |
-| `businesses` | id, slug, nombre, zona horaria | Núcleo |
-| `staff` | user\_id, business\_id, rol (`owner`, `staff`) | Núcleo |
-| `stripe_events` | event\_id único, procesado\_en | Núcleo (idempotencia de webhooks) |
-| `availability_rules` | día de la semana, hora, aforo, evento\_id opcional | Reservas |
-| `blocked_slots` | fecha, hora opcional, motivo | Reservas |
-| `reservations` | fecha, hora, personas, contacto, estado, señal, checkout\_session\_id, expira\_en | Reservas |
-| `gift_cards` | code\_hash único, importe inicial, saldo, estado, comprador, destinatario, envío\_programado, caduca\_en | Tarjetas |
-| `gift_card_ledger` | gift\_card\_id, tipo (`emision`, `canje`, `anulacion`), importe, staff\_id, creado\_en | Tarjetas |
+| Tabla                | Campos clave                                                                                             | Módulo                            |
+| -------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `businesses`         | id, slug, nombre, zona horaria                                                                           | Núcleo                            |
+| `staff`              | user\_id, business\_id, rol (`owner`, `staff`)                                                           | Núcleo                            |
+| `stripe_events`      | event\_id único, procesado\_en                                                                           | Núcleo (idempotencia de webhooks) |
+| `availability_rules` | día de la semana, hora, aforo, evento\_id opcional                                                       | Reservas                          |
+| `blocked_slots`      | fecha, hora opcional, motivo                                                                             | Reservas                          |
+| `reservations`       | fecha, hora, personas, contacto, estado, señal, checkout\_session\_id, expira\_en                        | Reservas                          |
+| `gift_cards`         | code\_hash único, importe inicial, saldo, estado, comprador, destinatario, envío\_programado, caduca\_en | Tarjetas                          |
+| `gift_card_ledger`   | gift\_card\_id, tipo (`emision`, `canje`, `anulacion`), importe, staff\_id, creado\_en                   | Tarjetas                          |
 
 El countdown no necesita tabla: lee la config y, si muestra plazas, consulta `availability_rules` y `reservations`. El saldo de `gift_cards` se actualiza en la misma transacción que la fila del libro, que es la fuente de verdad para auditar.
 
@@ -207,12 +211,12 @@ El countdown no necesita tabla: lee la config y, si muestra plazas, consulta `av
 
 El pack Básico es landing + countdown + WhatsApp; el Completo suma tarjetas regalo o reservas según el negocio, así que solo hace falta tener lista la base para empezar a vender el 2 de noviembre.
 
-| Pack | Módulos | Encaja con |
-| --- | --- | --- |
-| Básico (250 €) | Landing, countdown, CTA a WhatsApp | Tiendas, peluquerías, cualquier negocio sin sistema |
-| Completo (450 €) – tarjetas | Básico + tarjetas regalo | Peluquerías, estética, tiendas, gimnasios |
-| Completo (450 €) – reservas | Básico + reservas con señal para grupos | Restaurantes y cenas de empresa |
-| Extra a medida | El otro módulo, a partir de 150 € | Restaurantes que quieren las dos cosas |
+| Pack                        | Módulos                                 | Encaja con                                          |
+| --------------------------- | --------------------------------------- | --------------------------------------------------- |
+| Básico (250 €)              | Landing, countdown, CTA a WhatsApp      | Tiendas, peluquerías, cualquier negocio sin sistema |
+| Completo (450 €) – tarjetas | Básico + tarjetas regalo                | Peluquerías, estética, tiendas, gimnasios           |
+| Completo (450 €) – reservas | Básico + reservas con señal para grupos | Restaurantes y cenas de empresa                     |
+| Extra a medida              | El otro módulo, a partir de 150 €       | Restaurantes que quieren las dos cosas              |
 
 Orden de construcción:
 
