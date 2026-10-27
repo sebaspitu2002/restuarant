@@ -40,7 +40,7 @@ Pasos y commits:
 
 Pasos y commits:
 
-- [ ] `defineClient` con esquema Zod y carga por `CLIENT_SLUG`; error claro si la config no valida → `feat(core): add client config schema and loader`
+- [x] `defineClient` con esquema Zod y carga por `CLIENT_SLUG`; error claro si la config no valida → `feat(core): add client config schema and loader`
 - [ ] `isEnabled(modulo)` y helper `requireModule()` que hace `notFound()` → `feat(core): add module flags and route guard`
 - [ ] Tema por cliente: variables CSS de color y fuente generadas desde la config → `feat(core): apply client brand theme`
 - [ ] Migración `businesses` y `staff` con RLS por `business_id` → `feat(db): add businesses and staff tables with rls`
