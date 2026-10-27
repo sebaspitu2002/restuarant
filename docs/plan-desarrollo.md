@@ -29,7 +29,7 @@ Pasos y commits:
 - [x] Crear el proyecto con `**create-next-app**` (TypeScript, Tailwind, App Router, ESLint) → `chore: init next.js app with typescript and tailwind`
 - [x] Añadir Prettier, scripts `typecheck` y `lint`, y un workflow de GitHub Actions que los ejecute → `chore: add prettier, typecheck and ci workflow`
 - [x] Crear el proyecto de Supabase, instalar la CLI y enlazarlo; carpeta `supabase/` versionada → `chore(db): link supabase project and add migrations folder`
-- [ ] Crear `.env.example` con todas las variables (Supabase, Stripe, Resend, `CLIENT_SLUG`, `HMAC_SECRET`) → `chore: add env example`
+- [x] Crear `.env.example` con todas las variables (Supabase, Stripe, Resend, `CLIENT_SLUG`, `HMAC_SECRET`) → `chore: add env example`
 - [ ] Conectar el repo a Vercel y comprobar el despliegue de `main` y de una rama → `docs: add readme with setup and deploy steps`
 
 ## Fase 1: núcleo y configuración (27 de octubre) → v0.1.0
