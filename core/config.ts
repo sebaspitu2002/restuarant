@@ -1,4 +1,5 @@
 import "server-only";
+import { notFound } from "next/navigation";
 import { z } from "zod";
 import { clients } from "@/clients";
 import { clientConfigSchema, type ClientConfig } from "./client-schema";
@@ -32,4 +33,17 @@ export function getClient(): ClientConfig {
 
   cached = result.data;
   return cached;
+}
+
+export type ModuleName = Exclude<keyof ClientConfig["modules"], "landing">;
+
+export function isEnabled(module: ModuleName): boolean {
+  return getClient().modules[module].enabled;
+}
+
+/** Hace 404 si el módulo está apagado. Primera línea de toda página de un módulo. */
+export function requireModule(module: ModuleName): void {
+  if (!isEnabled(module)) {
+    notFound();
+  }
 }
