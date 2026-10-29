@@ -134,3 +134,5 @@ export type ClientConfig = z.output<typeof clientConfigSchema>;
 export function defineClient(config: ClientConfigInput): ClientConfigInput {
   return config;
 }
+
+export type BrandFont = (typeof FONTS)[number];
